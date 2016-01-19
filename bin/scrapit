@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 var debug = require('debug')('scrapit');
 var server = require('config').Server;
 var app = require('../app');
