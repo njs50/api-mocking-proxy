@@ -1,9 +1,9 @@
 {
-  "Server": {
+  "server": {
     "host": "localhost",
     "port": 8088
   },    
-  "Mappings": {
+  "mappings": {
     "wiki": {
       "dir": "data/wiki",
       "host": "http://en.wikipedia.org",
@@ -15,5 +15,5 @@
       "skipHeaders": true
     }
   },
-  "Timeout": 3000
+  "timeout": 3000
 }

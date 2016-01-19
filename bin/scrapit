@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 var debug = require('debug')('scrapit');
-var server = require('config').Server;
+var server = require('config').server;
 var app = require('../lib');
 
 var port = server.port, host = server.host;

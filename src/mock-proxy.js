@@ -1,5 +1,5 @@
 var request = require('request');
-var timeout = require('config').Timeout;
+var timeout = require('config').timeout;
 var cacher = require('./response-cacher')();
 var appUtils = require('./app-utils')();
 var Q = require('q');

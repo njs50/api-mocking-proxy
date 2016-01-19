@@ -6,9 +6,9 @@ var xmlParser = require('express-xml-bodyparser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var url = require('url');
-var mappings = require('config').Mappings;
+var mappings = require('config').mappings;
 var appRoot = path.join(__dirname, '..');
-var docRoot = require('config').DocRoot || appRoot;
+var docRoot = require('config').docRoot || appRoot;
 
 /* Initialization */
 var app = express();
