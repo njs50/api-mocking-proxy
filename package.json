@@ -1,8 +1,8 @@
 {
-  "name": "scrapit",
-  "version": "0.0.4",
-  "description": "Allows to scrape API calls (HTTP), modify captured responses and replay them.",
-  "author": "Tomas Zezula <zezulatomas@gmail.com>",
+  "name": "api-mocking-proxy",
+  "version": "0.1.0",
+  "description": "An (HTTP) API proxy server that stores and replays captured responses.",
+  "author": "Colin Bate <colin@colinbate.com>",
   "contributors": [
     "Tomas Zezula <zezulatomas@gmail.com>"
   ],
@@ -15,10 +15,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zezutom/scrapit"
+    "url": "https://github.com/colinbate/scrapit"
   },
   "bugs": {
-    "url": "https://github.com/zezutom/scrapit/issues"
+    "url": "https://github.com/colinbate/scrapit/issues"
   },
   "keywords": [
     "mock",
@@ -57,7 +57,7 @@
   },
   "analyze": true,
   "license": "MIT",
-  "homepage": "https://github.com/zezutom/scrapit",
+  "homepage": "https://github.com/colinbate/scrapit",
   "main": "app.js",
   "directories": {
     "test": "test"

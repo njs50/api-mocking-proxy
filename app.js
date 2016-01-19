@@ -30,21 +30,21 @@ proxy.init(docRoot, mappings);
 /* Routing */
 // GET home page
 app.get('/', function(req, res) {
-  res.render('index', { title: 'API Mock Server' });
+  res.render('index', { title: 'API Mocking Proxy Server' });
 });
 
 // Proxied http methods
 var supportedMethods = ['get', 'post', 'put', 'delete'];
 
 for (var key in mappings) {
-	var mappedUrl = '/' + key + '*';
+  var mappedUrl = '/' + key + '*';
 
-    // API calls are delegated to the mock server
-    supportedMethods.forEach(function(method) {
-        app[method](mappedUrl, function(req, res) {
-            proxy.execute(req, res);
-        });
+  // API calls are delegated to the mock server
+  supportedMethods.forEach(function(method) {
+    app[method](mappedUrl, function(req, res) {
+      proxy.execute(req, res);
     });
+  });
 }
 
 module.exports = app;
