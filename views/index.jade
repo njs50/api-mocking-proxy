@@ -3,3 +3,7 @@ extends layout
 block content
   h1= title
   p Welcome to the #{title}
+  h2 Current Proxies
+  ul
+    each conf, key in mappings
+      li= '/' + key + '/* => ' + conf.host + '/*'

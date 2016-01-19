@@ -6,6 +6,7 @@ var xmlParser = require('express-xml-bodyparser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var url = require('url');
+var proxy = require('./mock-proxy')();
 var mappings = require('config').get('mappings');
 var appRoot = path.join(__dirname, '..');
 var dataRoot = path.resolve(appRoot, require('config').dataRoot || '');
@@ -25,27 +26,21 @@ app.set('views', path.join(appRoot, 'views'));
 app.set('view engine', 'jade');
 
 // Mock server initialization
-var proxy = require('./mock-proxy')();
 proxy.init(dataRoot, mappings);
 
 /* Routing */
 // GET home page
-app.get('/', function(req, res) {
-  res.render('index', { title: 'API Mocking Proxy Server' });
+app.get('/', (req, res) => {
+  res.render('index', { title: 'API Mocking Proxy Server', mappings });
 });
 
 // Proxied http methods
 var supportedMethods = ['get', 'post', 'put', 'delete'];
 
 for (var key in mappings) {
-  var mappedUrl = '/' + key + '*';
-
+  let mappedUrl = '/' + key + '*';
   // API calls are delegated to the mock server
-  supportedMethods.forEach(function(method) {
-    app[method](mappedUrl, function(req, res) {
-      proxy.execute(req, res);
-    });
-  });
+  supportedMethods.forEach(method => app[method](mappedUrl, ::proxy.execute));
 }
 
 module.exports = app;
