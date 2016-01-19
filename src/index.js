@@ -7,7 +7,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var url = require('url');
 var mappings = require('config').Mappings;
-var docRoot = require('config').DocRoot || __dirname;
+var appRoot = path.join(__dirname, '..');
+var docRoot = require('config').DocRoot || appRoot;
 
 /* Initialization */
 var app = express();
@@ -17,14 +18,14 @@ app.use(bodyParser.json());                 // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded());           // to support URL-encoded bodies
 app.use(xmlParser({explicitArray: false})); // to support XML
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(appRoot, 'public')));
 
 // View engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(appRoot, 'views'));
 app.set('view engine', 'jade');
 
 // Mock server initialization
-var proxy = require('./modules/mock-proxy')();
+var proxy = require('./mock-proxy')();
 proxy.init(docRoot, mappings);
 
 /* Routing */

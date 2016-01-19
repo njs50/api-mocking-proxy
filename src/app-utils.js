@@ -6,9 +6,9 @@ var path = require('path');
 
 module.exports = function() {
 
-  if ( typeof String.prototype.startsWith != 'function' ) {
-    String.prototype.startsWith = function( str ) {
-      return str.length > 0 && this.substring( 0, str.length ) === str;
+  if (typeof String.prototype.startsWith !== 'function') {
+    String.prototype.startsWith = function (str) {
+      return str.length > 0 && this.substring(0, str.length) === str;
     }
   };
 
