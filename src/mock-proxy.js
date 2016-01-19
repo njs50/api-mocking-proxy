@@ -82,9 +82,9 @@ module.exports = function () {
           var mapping = this._mappings[key];
           return {
             key: key,
-            dir: mapping.dir,
+            dir: mapping.dir || key,
             host: mapping.host,
-            skipHeaders: mapping.skipHeaders
+            matchHeaders: mapping.matchHeaders || false
           };
         }
       }

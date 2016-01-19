@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 var debug = require('debug')('scrapit');
-var server = require('config').server;
+var server = require('config').get('server');
 var app = require('../lib');
 
-var port = server.port, host = server.host;
+var port = server.port,
+    host = server.host;
 console.log("Starting server: [http://%s:%s]", host, port);
 app.listen(port, host);

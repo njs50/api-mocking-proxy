@@ -6,9 +6,9 @@ var xmlParser = require('express-xml-bodyparser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var url = require('url');
-var mappings = require('config').mappings;
+var mappings = require('config').get('mappings');
 var appRoot = path.join(__dirname, '..');
-var docRoot = require('config').docRoot || appRoot;
+var dataRoot = path.resolve(appRoot, require('config').dataRoot || '');
 
 /* Initialization */
 var app = express();
@@ -26,7 +26,7 @@ app.set('view engine', 'jade');
 
 // Mock server initialization
 var proxy = require('./mock-proxy')();
-proxy.init(docRoot, mappings);
+proxy.init(dataRoot, mappings);
 
 /* Routing */
 // GET home page

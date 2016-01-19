@@ -38,9 +38,11 @@ module.exports = function() {
       }
 
       // Custom headers
-      if (!conf.skipHeaders) {
+      if (conf.matchHeaders) {
         var headers = appUtils.getReqHeaders(req);
-        if (headers) path = appUtils.bind(path, headers);
+        if (headers) {
+          path = appUtils.bind(path, headers);
+        }
       }
 
       // Meta info regarding the request's url, including the query string

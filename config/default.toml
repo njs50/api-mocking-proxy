@@ -1,0 +1,12 @@
+timeout = 3000
+dataRoot = "data"
+
+[server]
+host = "localhost"
+port = 8088
+
+[mappings.wiki]
+host = "http://en.wikipedia.org"
+
+[mappings.md5]
+host = "http://md5.jsontest.com"
