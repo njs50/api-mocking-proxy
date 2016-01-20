@@ -1,21 +1,50 @@
-var request = require('request');
-var timeout = require('config').timeout;
-var cacher = require('./response-cacher')();
-var appUtils = require('./app-utils')();
-var Q = require('q');
+import request from 'request';
+import config from 'config';
+import Cacher from './response-cacher';
+import * as appUtils from './app-utils';
+import Q from 'q';
 
-module.exports = function () {
+// Private functions
+function success(res, options) {
+  res.writeHead(options.code || 200, options.headers);
+  res.write(options.body);
+  res.end();
+}
+    
+function error(res, err) {
+  console.error('request failed: ' + err);
+  res.writeHead(500, {"Content-Type": 'text/plain'});
+  res.write('An error has occured, please review the logs.');
+  res.end();
+}
 
-  return {
-    _mappings: {},
+function createConf(req, mappings) {
+  // remove a leading slash if there is any
+  var reqUrl = req.url.startsWith('/') ? req.url.substr(1) : req.url;
 
-    init: function (docRoot, mappings) {
-      this._mappings = mappings;
-      cacher.init(docRoot);
-    },
-    execute: function (req, res) {
-      var deferred = Q.defer(),
-          conf = this._conf(req);
+  for (let [key, mapping] of mappings) {
+    if (reqUrl.startsWith(key) || reqUrl.startsWith(mapping.host)) {
+      return {
+        key: key,
+        dir: mapping.dir || key,
+        host: mapping.host,
+        matchHeaders: mapping.matchHeaders || false
+      };
+    }
+  }
+  throw new Error('No configuration found!');
+}
+
+export default class MockProxy {
+    constructor(mappings) {
+      this.mappings = mappings;
+      this.cache = new Cacher();
+      this.config = config.get('proxy');
+    }
+    
+    execute(req, res) {
+      let deferred = Q.defer(),
+          conf = createConf(req, this.mappings);
 
       // There is a cached response
       if (this._loadCached(conf, req, res)) {
@@ -23,7 +52,7 @@ module.exports = function () {
         return deferred.promise;
       }
 
-      var handler = function(err, retRes, body) {
+      let handler = (err, retRes, body) => {
         if (!err && /^2\d\d$/.test(retRes.statusCode)) {
           var data = {
             code: retRes.statusCode,
@@ -31,20 +60,19 @@ module.exports = function () {
             body: body
           };
 
-          var me = this;
-          cacher.set(conf, req, data).then(
-            function() {
-              me._success(res, data);
+          this.cache.set(conf, req, data).then(
+            () => {
+              success(res, data);
               deferred.resolve();
             },
-            function(err) {
-              me._error(res, err);
+            (err) => {
+              error(res, err);
               deferred.reject(err);
             }
           );
 
         } else {
-          this._error(res, err);
+          error(res, err);
           deferred.reject(err);
         }
       };
@@ -55,64 +83,31 @@ module.exports = function () {
       switch (req.method) {
         case 'GET':
         case 'DELETE':
-          urlConf = {url: hostUrl, timeout: timeout};
+          urlConf = {url: hostUrl, timeout: this.config.timeout};
           method = (req.method === 'GET') ? request : request.del;
           break;
         case 'POST':
         case 'PUT':
-          urlConf = {url: hostUrl, form: req.body, timeout: timeout};
+          urlConf = {url: hostUrl, form: req.body, timeout: this.config.timeout};
           method = (req.method === 'POST') ? request.post : request.put;
           break;
         default:
           deferred.reject(new Error('Invalid HTTP method: ' + req.method));
       }
       if (method) {
-        method(urlConf, handler.bind(this));
+        method(urlConf, handler);
       }
       return deferred.promise;
-    },
-    _conf: function(req) {
-
-      // remove a leading slash if there is any
-      var reqUrl = req.url.startsWith('/') ? req.url.replace('/','') : req.url;
-
-      for (var key in this._mappings) {
-        var host = this._mappings[key].host;
-        if (this._equals(reqUrl, key) || this._equals(reqUrl, host)) {
-          var mapping = this._mappings[key];
-          return {
-            key: key,
-            dir: mapping.dir || key,
-            host: mapping.host,
-            matchHeaders: mapping.matchHeaders || false
-          };
-        }
-      }
-      throw new Error('No configuration found!');
-    },
-    _equals: function(value, key) {
-      return value.substring(0, key.length) === key;
-    },
-    _loadCached: function(conf, req, res) {
+    }
+    
+    _loadCached(conf, req, res) {
       var cached = false,
-          data = cacher.get(conf, req);
+          data = this.cache.get(conf, req);
 
       if (data) {
-        this._success(res, JSON.parse(data));
+        success(res, JSON.parse(data));
         cached = true;
       }
       return cached;
-    },
-    _success: function(res, options) {
-      res.writeHead(options.code || 200, options.headers);
-      res.write(options.body);
-      res.end();
-    },
-    _error: function(res, err) {
-      console.error('request failed: ' + err);
-      res.writeHead(500, {"Content-Type": 'text/plain'});
-      res.write('An error has occured, please review the logs.');
-      res.end();
     }
-  };
-};
+}

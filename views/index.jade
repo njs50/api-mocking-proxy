@@ -5,5 +5,5 @@ block content
   p Welcome to the #{title}
   h2 Current Proxies
   ul
-    each conf, key in mappings
-      li= '/' + key + '/* => ' + conf.host + '/*'
+    each m in mappings
+      li= '/' + m.key + '/* => ' + m.host + '/*'

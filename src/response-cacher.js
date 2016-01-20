@@ -1,26 +1,32 @@
-var fs = require('fs');
-var filendir = require('filendir')
-var appUtils = require('./app-utils')();
-var Q = require('q');
+import * as fs from 'fs';
+import filendir from 'filendir';
+import * as appUtils from './app-utils';
+import Q from 'q';
+import config from 'config';
+import {resolve, join} from 'path'
 
-module.exports = function() {
+function readMock(mockPath) {
+  return (fs.existsSync(mockPath)) ? fs.readFileSync(mockPath, 'utf8') : '';
+}
 
-  return {
-    _docRoot: undefined,
-
-    init: function(docRoot) {
-      this._docRoot = appUtils.getAbsPath(docRoot);
-    },
-    get: function(conf, req) {
-      return this._readMock(this._resolveMockPath(conf, req));
-    },
-    set: function(conf, req, options) {
-      if (!options) {
-        throw new Error("Invalid argument: options must be provided!");
+export default class Cacher {
+    constructor() {
+      this.config = config.get('cache');
+      let appRoot = join(__dirname, '..');
+      this.dataRoot = resolve(appRoot, this.config.dataRoot || '');
+    }
+    
+    get(conf, req) {
+      return readMock(this._resolveMockPath(conf, req));
+    }
+    
+    set(conf, req, data) {
+      if (!data) {
+        throw new Error("Invalid argument: data must be provided!");
       }
       var deferred = Q.defer(),
           mockPath = this._resolveMockPath(conf, req);
-      filendir.wa(mockPath, JSON.stringify(options), function(err) {
+      filendir.wa(mockPath, JSON.stringify(data), err => {
         if (err) {
           deferred.reject(err);
         } else {
@@ -28,8 +34,9 @@ module.exports = function() {
         }
       });
       return deferred.promise;
-    },
-    _resolveMockPath: function(conf, req) {
+    }
+    
+    _resolveMockPath(conf, req) {
 
       // Mock data directory associated with the API call
       var path = appUtils.getDataDir(conf, req);
@@ -41,7 +48,7 @@ module.exports = function() {
       if (conf.matchHeaders) {
         var headers = appUtils.getReqHeaders(req);
         if (headers) {
-          path = appUtils.bind(path, headers);
+          path = join(path, headers);
         }
       }
 
@@ -52,20 +59,16 @@ module.exports = function() {
         // REST parameters
         var urlPath = appUtils.getUrlPath(parts);
         if (urlPath) {
-          path = appUtils.bind(path, urlPath);
+          path = join(path, urlPath);
         }
 
         // Query string
         var qs = appUtils.getQueryString(urlPath, parts, req);
         if (qs) {
-          path = (urlPath) ? path += qs : appUtils.bind(path, qs);
+          path = (urlPath) ? path += qs : join(path, qs);
         }
       }
 
-      return appUtils.bind(this._docRoot, path + '.mock');
-    },
-    _readMock: function(mockPath) {
-      return (fs.existsSync(mockPath)) ? fs.readFileSync(mockPath, 'utf8') : '';
+      return join(this._docRoot, path + '.mock');
     }
-  };
-};
+}

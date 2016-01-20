@@ -1,9 +1,12 @@
-timeout = 3000
-dataRoot = "data"
-
 [server]
 host = "localhost"
 port = 8088
+
+[proxy]
+timeout = 3000
+
+[cache]
+dataRoot = "data"
 
 [mappings.wiki]
 host = "http://en.wikipedia.org"
