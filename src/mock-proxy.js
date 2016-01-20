@@ -1,113 +1,42 @@
 import request from 'request';
+import pify from 'pify';
 import config from 'config';
-import Cacher from './response-cacher';
-import * as appUtils from './app-utils';
-import Q from 'q';
+import cacher from './cacher';
+import {passthru, errorHandler} from './app-utils';
 
-// Private functions
-function success(res, options) {
-  res.writeHead(options.code || 200, options.headers);
-  res.write(options.body);
-  res.end();
-}
-    
-function error(res, err) {
-  console.error('request failed: ' + err);
-  res.writeHead(500, {"Content-Type": 'text/plain'});
-  res.write('An error has occured, please review the logs.');
-  res.end();
-}
+const proxyConfig = config.get('proxy');
+const timeout = proxyConfig.timeout || 5000;
 
-function createConf(req, mappings) {
-  // remove a leading slash if there is any
-  var reqUrl = req.url.startsWith('/') ? req.url.substr(1) : req.url;
+const requestp = pify(request, {multiArgs: true});
 
-  for (let [key, mapping] of mappings) {
-    if (reqUrl.startsWith(key) || reqUrl.startsWith(mapping.host)) {
-      return {
-        key: key,
-        dir: mapping.dir || key,
-        host: mapping.host,
-        matchHeaders: mapping.matchHeaders || false
-      };
+const eh = (res) => (err) => errorHandler(res, err);
+
+const responseHandler = (req, res) => ([retRes, body]) => {
+  var data = {
+    code: retRes.statusCode,
+    headers: retRes.headers,
+    body: body
+  };
+
+  cacher.set(req, data).then(() => passthru(res, data), eh(res));
+};
+
+
+const middleware = () => (req, res, next) => {
+  const url = req.conf.host + req.urlToProxy,
+        method = req.method.toLowerCase(),
+        urlConf = {url, timeout};
+
+  if (req.body) {
+    if (req.headers['content-type'] === 'application/x-www-form-urlencoded') {
+      urlConf.form = req.body;
+    } else {
+      // default to JSON
+      urlConf.json = true;
+      urlConf.body = req.body;
     }
   }
-  throw new Error('No configuration found!');
+  requestp[method](urlConf).then(responseHandler(req, res));
 }
 
-export default class MockProxy {
-    constructor(mappings) {
-      this.mappings = mappings;
-      this.cache = new Cacher();
-      this.config = config.get('proxy');
-    }
-    
-    execute(req, res) {
-      let deferred = Q.defer(),
-          conf = createConf(req, this.mappings);
-
-      // There is a cached response
-      if (this._loadCached(conf, req, res)) {
-        deferred.resolve();
-        return deferred.promise;
-      }
-
-      let handler = (err, retRes, body) => {
-        if (!err && /^2\d\d$/.test(retRes.statusCode)) {
-          var data = {
-            code: retRes.statusCode,
-            headers: retRes.headers,
-            body: body
-          };
-
-          this.cache.set(conf, req, data).then(
-            () => {
-              success(res, data);
-              deferred.resolve();
-            },
-            (err) => {
-              error(res, err);
-              deferred.reject(err);
-            }
-          );
-
-        } else {
-          error(res, err);
-          deferred.reject(err);
-        }
-      };
-
-      var hostUrl = conf.host + appUtils.stripApiKey(conf.key, req.url),
-          method, urlConf;
-
-      switch (req.method) {
-        case 'GET':
-        case 'DELETE':
-          urlConf = {url: hostUrl, timeout: this.config.timeout};
-          method = (req.method === 'GET') ? request : request.del;
-          break;
-        case 'POST':
-        case 'PUT':
-          urlConf = {url: hostUrl, form: req.body, timeout: this.config.timeout};
-          method = (req.method === 'POST') ? request.post : request.put;
-          break;
-        default:
-          deferred.reject(new Error('Invalid HTTP method: ' + req.method));
-      }
-      if (method) {
-        method(urlConf, handler);
-      }
-      return deferred.promise;
-    }
-    
-    _loadCached(conf, req, res) {
-      var cached = false,
-          data = this.cache.get(conf, req);
-
-      if (data) {
-        success(res, JSON.parse(data));
-        cached = true;
-      }
-      return cached;
-    }
-}
+export default middleware;

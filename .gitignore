@@ -2,3 +2,5 @@ node_modules
 *.log
 .idea
 lib
+config/local*
+data/local/**
