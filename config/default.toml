@@ -4,6 +4,7 @@ port = 8088
 
 [proxy]
 timeout = 3000
+disable = false
 
 [cache]
 dataRoot = "data"

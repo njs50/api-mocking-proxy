@@ -1,7 +1,10 @@
 import cacher from './cacher';
-import {passthru} from './app-utils';
+import {passthru, shouldIgnore} from './app-utils';
 
 const middleware = () => (req, res, next) => {
+  if (shouldIgnore(req)) {
+    return next();
+  }
   cacher.get(req).then((payload) => {
     if (!payload) {
       // Not in cache, keep on moving.

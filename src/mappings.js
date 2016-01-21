@@ -1,4 +1,5 @@
 import config from 'config';
+import {shouldIgnore} from './app-utils';
 
 const mappings = config.get('mappings');
 
@@ -7,6 +8,9 @@ const mapmap = new Map();
 Object.keys(mappings).forEach(key => mapmap.set(key, { key, ...mappings[key] }));
 
 const middleware = () => (req, res, next) => {
+  if (shouldIgnore(req)) {
+    return next();
+  }
   // remove a leading slash if there is any
   const reqUrl = req.url.startsWith('/') ? req.url.substr(1) : req.url;
   const key = reqUrl.split('/')[0];
@@ -16,7 +20,12 @@ const middleware = () => (req, res, next) => {
       key: key,
       dir: mapping.dir || key,
       host: mapping.host,
-      matchHeaders: mapping.matchHeaders || false
+      matchHeaders: mapping.matchHeaders || false,
+      matchProps: mapping.matchProps === false ? false : (mapping.matchProps || true),
+      ignoreProps: mapping.ignoreProps,
+      contentType: mapping.contentType,
+      noproxy: mapping.noproxy,
+      nocache: mapping.nocache
     };
     req.conf = conf;
     req.urlToProxy = reqUrl.replace(key, '');
@@ -29,5 +38,6 @@ const middleware = () => (req, res, next) => {
 };
 
 middleware.mappings = mapmap;
+middleware.bodyParserConfig = { type: (req) => !shouldIgnore(req) };
 
 export default middleware;
