@@ -4,10 +4,8 @@ import server from './serve';
 
 const argv = minimist(process.argv.slice(2), {alias:{root:['r','data']}});
 
-export function go() {
-  if (argv.root) {
-    cacher.root = argv.root;
-  }
-
-  server();
+if (argv.root) {
+  cacher.root = argv.root;
 }
+
+server();
