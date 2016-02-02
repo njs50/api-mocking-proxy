@@ -78,6 +78,8 @@ export function resolveMockPath(req, dataRoot) {
     const urlPath = getUrlPath(parts);
     if (urlPath) {
       path = join(path, urlPath);
+    } else {
+      path = join(path, 'index');
     }
 
     // Query string
