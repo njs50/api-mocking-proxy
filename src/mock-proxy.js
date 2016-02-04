@@ -5,7 +5,7 @@ import config from 'config';
 import cacher from './cacher';
 import {passthru, errorHandler, shouldIgnore} from './app-utils';
 
-const proxyConfig = config.get('proxy');
+const proxyConfig = config.has('proxy') ? config.get('proxy') : {};
 const timeout = proxyConfig.timeout || 5000;
 const disabled = !!proxyConfig.disable;
 

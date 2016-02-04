@@ -6,7 +6,7 @@ import touch from 'touch';
 import pify from 'pify';
 import {parse, stringify} from './cache-persist';
 
-const cacheConfig = config.get('cache');
+const cacheConfig = config.has('cache') ? config.get('cache') : {};
 const appRoot = join(__dirname, '..');
 const dataRoot = resolve(appRoot, cacheConfig.dataRoot || 'data');
 const disabled = !!cacheConfig.disable;

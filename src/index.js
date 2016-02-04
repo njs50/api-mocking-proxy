@@ -35,4 +35,4 @@ app.get('/', (req, res) => {
   res.render('index', { title: 'API Mocking Proxy Server', mappings: Array.from(mappings.mappings.values()) });
 });
 
-module.exports = app;
+export default app;

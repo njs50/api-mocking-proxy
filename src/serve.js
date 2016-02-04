@@ -2,10 +2,10 @@ import config from 'config';
 import app from './index';
 
 export default function () {
-  const server = config.get('server');
+  const server = config.has('server') ? config.get('server') : {};
 
-  const port = server.port,
-        host = server.host;
+  const port = server.port || 8088,
+        host = server.host || 'localhost';
   console.log("Starting server: [http://%s:%s]", host, port);
   app.listen(port, host);
 };

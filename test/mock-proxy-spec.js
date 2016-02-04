@@ -4,8 +4,8 @@ var nock = require('nock');
 var path = require('path');
 var rimraf = require('rimraf');
 var testUtils = require('./test-utils')();
-var proxy = require('../modules/mock-proxy')();
-var cacher = require('../modules/response-cacher')();
+var proxy = require('../lib/mock-proxy');
+var cacher = require('../lib/cacher');
 var docRoot = __dirname;
 
 var mappings = 

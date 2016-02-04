@@ -1,7 +1,7 @@
 import config from 'config';
 import {shouldIgnore} from './app-utils';
 
-const mappings = config.get('mappings');
+const mappings = config.has('mappings') ? config.get('mappings') : {};
 
 const mapmap = new Map();
 
