@@ -1,14 +1,13 @@
 {
   "name": "api-mocking-proxy",
-  "version": "1.0.0-alpha.1",
-  "private": true,
+  "version": "1.0.0-alpha.5",
   "description": "An (HTTP) API proxy server that stores and replays captured responses.",
   "author": "Colin Bate <colin@colinbate.com>",
   "contributors": [
     "Tomas Zezula <zezulatomas@gmail.com>"
   ],
   "bin": {
-    "scrapit": "bin/scrapit"
+    "scrapit": "bin/amp"
   },
   "scripts": {
     "build": "babel src --out-dir lib",
