@@ -2,10 +2,27 @@ import {resolveMockPath} from './app-utils';
 import * as file from './files';
 import config from 'config';
 import {resolve, join} from 'path'
+import touch from 'touch';
+import pify from 'pify';
+import {parse, stringify} from './cache-persist';
 
 const cacheConfig = config.get('cache');
 const appRoot = join(__dirname, '..');
 const dataRoot = resolve(appRoot, cacheConfig.dataRoot || 'data');
+const disabled = !!cacheConfig.disable;
+const touchFiles = !!cacheConfig.touchFiles;
+const touchp = pify(touch);
+
+const tap = (fn, ...params) => input => {
+  return fn(input, ...params).then(() => input);
+};
+
+const doTouch = (content, file, conf) => {
+  if (!content && (touchFiles || conf.touchFiles)) {
+    return touchp(file);
+  }
+  return Promise.resolve(false);
+};
 
 class Cacher {
   constructor() {
@@ -13,7 +30,14 @@ class Cacher {
   }
   
   get(req) {
-    return file.read(resolveMockPath(req, this.root)).then(JSON.parse);
+    const mockFile = resolveMockPath(req, this.root);
+    if (disabled || req.conf.nocache) {
+      return doTouch(false, mockFile, req.conf);
+    }
+    return file
+      .read(mockFile)
+      .then(parse)
+      .then(tap(doTouch, mockFile, req.conf));
   }
   
   set(req, data) {
@@ -21,7 +45,7 @@ class Cacher {
       return Promise.reject('Invalid argument: data must be provided!');
     }
     var mockPath = resolveMockPath(req, this.root);
-    return file.write(mockPath, JSON.stringify(data));
+    return file.write(mockPath, stringify(data));
   }
 }
 

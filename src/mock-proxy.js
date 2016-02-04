@@ -9,6 +9,12 @@ const proxyConfig = config.get('proxy');
 const timeout = proxyConfig.timeout || 5000;
 const disabled = !!proxyConfig.disable;
 
+// Add OPTIONS convenience wrapper
+request.options = (opts, callback) => {
+  opts.method = 'OPTIONS';
+  return request(opts, callback);
+};
+
 const requestp = pify(request, {multiArgs: true});
 
 const eh = (res) => (err) => errorHandler(res, err);

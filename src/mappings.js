@@ -25,7 +25,8 @@ const middleware = () => (req, res, next) => {
       ignoreProps: mapping.ignoreProps,
       contentType: mapping.contentType,
       noproxy: mapping.noproxy,
-      nocache: mapping.nocache
+      nocache: mapping.nocache,
+      touchFiles: mapping.touchFiles
     };
     req.conf = conf;
     req.urlToProxy = reqUrl.replace(key, '');

@@ -23,7 +23,7 @@ function getProps(req, match, ignore) {
         pobj[m] = req.props[m];
       }
     }
-  } else {
+  } else if (match !== false) {
     pobj = req.props;
   }
   if (Array.isArray(ignore)) {
@@ -39,8 +39,17 @@ function getReqHeaders(req, match) {
   let headers = '';
   if (Array.isArray(match)) {
     for (let header of match) {
+      let presenseOnly = false;
+      if (header.startsWith('@')) {
+        presenseOnly = true;
+        header = header.substring(1);
+      }
       if (header in req.headers) {
-        headers = join(headers, stripSpecialChars(header + '/' + req.headers[header]));
+        if (presenseOnly) {
+          headers = join(headers, stripSpecialChars(header));
+        } else {
+          headers = join(headers, stripSpecialChars(header + '/' + req.headers[header]));
+        }
       }
     }
   } else {

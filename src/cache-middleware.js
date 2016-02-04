@@ -11,6 +11,9 @@ const middleware = () => (req, res, next) => {
       return next();
     }
     passthru(res, payload);
+  }).catch(err => {
+    console.log('Cache error', err);
+    next();
   });
 };
 
