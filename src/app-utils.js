@@ -104,9 +104,14 @@ export function resolveMockPath(req, dataRoot) {
 }
 
 export function passthru(res, options) {
-  res.writeHead(options.code || 200, options.headers);
-  res.write(options.body);
-  res.end();
+  try {
+    res.writeHead(options.code || 200, options.headers);
+    res.write(options.body);
+    res.end();
+  } catch (e) {
+    console.warn('Error writing response', e);
+    res.end();
+  }
 }
     
 export function errorHandler(res, err) {

@@ -52,6 +52,9 @@ const stringify = input => {
     results.push(Object.keys(input.headers).map(key => `${key}: ${input.headers[key]}`).join('\n'));
   }
   if (input.body) {
+    if (typeof input.body !== 'string') {
+      input.body = JSON.stringify(input.body);
+    }
     results.push(input.body);
   }
   const result = results.join('\n\n');
