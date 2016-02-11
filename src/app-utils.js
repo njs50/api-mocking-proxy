@@ -1,20 +1,20 @@
 import {parse} from 'url';
 import querystring from 'querystring';
-import {join, resolve, dirname} from 'path';
+import {join} from 'path';
 
 // Utility methods
-function stripSpecialChars(val) {
+function stripSpecialChars (val) {
   if (!val) {
     return val;
   }
   return val.replace(/\?/g, '--').replace(/\//g, '__').replace(/:/g, '~~').replace(/\*/g, '%2A');
 }
 
-function getUrlPath(urlParts) {
+function getUrlPath (urlParts) {
   return stripSpecialChars((urlParts.pathname || '').replace('/', ''));
 }
 
-function getProps(req, match, ignore) {
+function getProps (req, match, ignore) {
   let qs;
   let pobj = {};
   if (Array.isArray(match)) {
@@ -35,7 +35,7 @@ function getProps(req, match, ignore) {
   return stripSpecialChars(qs);
 }
 
-function getReqHeaders(req, match) {
+function getReqHeaders (req, match) {
   let headers = '';
   if (Array.isArray(match)) {
     for (let header of match) {
@@ -60,11 +60,11 @@ function getReqHeaders(req, match) {
   return headers;
 }
 
-export function shouldIgnore({url}) {
+export function shouldIgnore ({url}) {
   return url === '' || url === '/' || url.startsWith('/__');
 }
 
-export function resolveMockPath(req, dataRoot) {
+export function resolveMockPath (req, dataRoot) {
   // Mock data directory associated with the API call
   let path = join(req.conf.dir, req.method);
   if (!path) {
@@ -103,7 +103,7 @@ export function resolveMockPath(req, dataRoot) {
   return path;
 }
 
-export function passthru(res, options) {
+export function passthru (res, options) {
   try {
     res.writeHead(options.code || 200, options.headers);
     res.write(options.body);
@@ -113,8 +113,8 @@ export function passthru(res, options) {
     res.end();
   }
 }
-    
-export function errorHandler(res, err) {
+
+export function errorHandler (res, err) {
   console.error('Request failed: ' + err);
   res.writeHead(500, {'Content-Type': 'text/plain'});
   res.write('An error has occured, please review the logs.');

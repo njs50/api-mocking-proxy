@@ -8,13 +8,13 @@ const readp = pify(readFile);
 const accessp = pify(access);
 const mkdirpp = pify(mkdirp);
 
-export function read(path) {
+export function read (path) {
   return accessp(path, R_OK)
     .then(() => readp(path, {encoding: 'utf8'}))
     .catch(() => 'false')
     .then(input => input || 'false'); // Empty files are cache miss
 }
 
-export function write(path, content) {
+export function write (path, content) {
   return mkdirpp(dirname(path)).then(() => writep(path, content, {encoding: 'utf8', flag: 'w'}));
 }

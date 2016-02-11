@@ -38,9 +38,9 @@ const middleware = () => (req, res, next) => {
     res.end();
     return;
   }
-  const url = req.conf.host + req.urlToProxy,
-        method = req.method.toLowerCase(),
-        urlConf = {url, timeout, headers: req.headers};
+  const url = req.conf.host + req.urlToProxy;
+  const method = req.method.toLowerCase();
+  const urlConf = {url, timeout, headers: req.headers};
   // Remove encoding because we've processed the body already.
   delete urlConf.headers['content-encoding'];
   // Reset host
@@ -49,6 +49,6 @@ const middleware = () => (req, res, next) => {
     urlConf.body = req.body;
   }
   requestp[method](urlConf).then(responseHandler(req, res));
-}
+};
 
 export default middleware;

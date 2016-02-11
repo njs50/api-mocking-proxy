@@ -1,7 +1,7 @@
 import {resolveMockPath} from './app-utils';
 import * as file from './files';
 import config from 'config';
-import {resolve, join} from 'path'
+import {resolve, join} from 'path';
 import touch from 'touch';
 import pify from 'pify';
 import {parse, stringify} from './cache-persist';
@@ -25,11 +25,11 @@ const doTouch = (content, file, conf) => {
 };
 
 class Cacher {
-  constructor() {
+  constructor () {
     this.root = dataRoot;
   }
-  
-  get(req) {
+
+  get (req) {
     const mockFile = resolveMockPath(req, this.root);
     if (disabled || req.conf.nocache) {
       return doTouch(false, mockFile, req.conf);
@@ -39,8 +39,8 @@ class Cacher {
       .then(parse)
       .then(tap(doTouch, mockFile, req.conf));
   }
-  
-  set(req, data) {
+
+  set (req, data) {
     if (!data) {
       return Promise.reject('Invalid argument: data must be provided!');
     }

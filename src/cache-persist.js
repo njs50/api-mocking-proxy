@@ -39,7 +39,7 @@ const parse = input => {
   if (parts.length) {
     res.body = parts.join('\n\n');
   }
-  
+
   return res;
 };
 

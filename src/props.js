@@ -10,11 +10,11 @@ const middleware = () => (req, res, next) => {
   let bodyData = {};
   if (req.body) {
     const bodyStr = req.body.toString('utf8');
-    
+
     try {
-      if ('application/json' === ct(req)) {
+      if (ct(req) === 'application/json') {
         bodyData = JSON.parse(bodyStr);
-      } else if ('application/x-www-form-urlencoded' === ct(req)) {
+      } else if (ct(req) === 'application/x-www-form-urlencoded') {
         bodyData = qs.parse(bodyStr);
       }
     } catch (e) { }
