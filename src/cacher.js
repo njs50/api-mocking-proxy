@@ -7,8 +7,7 @@ import pify from 'pify';
 import {parse, stringify} from './cache-persist';
 
 const cacheConfig = config.has('cache') ? config.get('cache') : {};
-const appRoot = join(__dirname, '..');
-const dataRoot = resolve(appRoot, cacheConfig.dataRoot || 'data');
+const dataRoot = resolve(cacheConfig.dataRoot || 'data');
 const disabled = !!cacheConfig.disable;
 const touchFiles = !!cacheConfig.touchFiles;
 const touchp = pify(touch);
