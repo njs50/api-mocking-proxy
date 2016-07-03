@@ -27,7 +27,7 @@ app.use(express.static(join(appRoot, 'public')));
 
 // View engine setup
 app.set('views', join(appRoot, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 
 /* Routing */
 // GET home page

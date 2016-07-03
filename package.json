@@ -35,8 +35,8 @@
   "dependencies": {
     "body-parser": "^1.14.2",
     "config": "^1.19.0",
+    "ejs": "^2.4.2",
     "express": "^4.13.3",
-    "jade": "^1.11.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "morgan": "^1.6.1",
