@@ -87,6 +87,7 @@ contentType = "application/json"
 noproxy = false # Don't proxy for this mapping
 nocache = false # Don't use the cache for this mapping
 touchFiles = false # Touch cache files for this mapping
+delay = 1000 # Add a delay of 1000 ms to the response
 
 # You can have as many mappings as you'd like:
 [mappings.twitter]
