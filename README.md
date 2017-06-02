@@ -1,5 +1,7 @@
 # API Mocking Proxy (AMP)
 
+[![Build Status](https://travis-ci.org/colinbate/api-mocking-proxy.svg?branch=master)](https://travis-ci.org/colinbate/api-mocking-proxy)
+
 AMP intercepts HTTP requests and replays captured responses. Its main purpose is to support test automation and daily development work by removing depedencies on 3rd party APIs - typically, but not only, based on JSON or XML.
 
 There is no GUI to this tool. However, the captured responses are stored as plain text files, which makes them easy to access and manipulate. 

@@ -1,7 +1,7 @@
 const timers = require('timers');
 
-const create_delayer = function() {
-  return function(req, res, next) {
+const createDelayer = function () {
+  return function (req, res, next) {
     const end = res.end;
 
     if (!req.conf || !req.conf.delay) {
@@ -10,9 +10,9 @@ const create_delayer = function() {
 
     const time = req.conf.delay;
 
-    res.end = function() {
+    res.end = function () {
       const args = arguments;
-      timers.setTimeout(function() {
+      timers.setTimeout(function () {
         end.apply(res, args);
       }, time);
     };
@@ -21,4 +21,4 @@ const create_delayer = function() {
   };
 };
 
-module.exports = create_delayer;
+module.exports = createDelayer;
