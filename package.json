@@ -12,7 +12,9 @@
   "scripts": {
     "build": "babel src --out-dir lib",
     "start": "npm run build && node lib/cli.js",
-    "test": "mocha",
+    "lint": "semistandard",
+    "unit": "mocha",
+    "test": "npm run lint",
     "prepublish": "npm run build"
   },
   "repository": {
@@ -42,6 +44,7 @@
     "morgan": "^1.6.1",
     "pify": "^2.3.0",
     "request": "^2.67.0",
+    "semistandard": "^11.0.0",
     "serve-favicon": "^2.3.0",
     "toml": "^2.3.0",
     "touch": "^1.0.0",
@@ -63,10 +66,5 @@
   "main": "lib/index.js",
   "directories": {
     "test": "test"
-  },
-  "semistandard": {
-    "ignore": [
-      "test/"
-    ]
   }
 }
