@@ -1,7 +1,7 @@
 import {resolveMockPath} from './app-utils';
 import * as file from './files';
 import config from 'config';
-import {resolve, join} from 'path';
+import {resolve} from 'path';
 import touch from 'touch';
 import pify from 'pify';
 import {parse, stringify} from './cache-persist';
@@ -41,7 +41,7 @@ class Cacher {
 
   set (req, data) {
     if (!data) {
-      return Promise.reject('Invalid argument: data must be provided!');
+      return Promise.reject(new Error('Invalid argument: data must be provided!'));
     }
     var mockPath = resolveMockPath(req, this.root);
     return file.write(mockPath, stringify(data));

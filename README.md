@@ -1,5 +1,7 @@
 # API Mocking Proxy (AMP)
 
+[![Build Status](https://travis-ci.org/colinbate/api-mocking-proxy.svg?branch=master)](https://travis-ci.org/colinbate/api-mocking-proxy)
+
 AMP intercepts HTTP requests and replays captured responses. Its main purpose is to support test automation and daily development work by removing depedencies on 3rd party APIs - typically, but not only, based on JSON or XML.
 
 There is no GUI to this tool. However, the captured responses are stored as plain text files, which makes them easy to access and manipulate. 
@@ -87,6 +89,7 @@ contentType = "application/json"
 noproxy = false # Don't proxy for this mapping
 nocache = false # Don't use the cache for this mapping
 touchFiles = false # Touch cache files for this mapping
+delay = 1000 # Add a delay of 1000 ms to the response
 
 # You can have as many mappings as you'd like:
 [mappings.twitter]
