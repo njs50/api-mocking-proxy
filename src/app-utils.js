@@ -108,11 +108,13 @@ export function passthru (res, options) {
   try {
     res.writeHead(options.code || 200, options.headers);
     if (options.headers['content-encoding'] && options.headers['content-encoding'] === 'gzip') {
-      res.write(zlib.gzipSync(options.body));
+      zlib.gzip(options.body, function (_, result) {
+        res.end(result);
+      })
     } else {
       res.write(options.body);
+      res.end();
     }
-    res.end();
   } catch (e) {
     console.warn('Error writing response', e);
     res.end();
