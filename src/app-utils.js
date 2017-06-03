@@ -110,7 +110,7 @@ export function passthru (res, options) {
     if (options.headers['content-encoding'] && options.headers['content-encoding'] === 'gzip') {
       zlib.gzip(options.body, function (_, result) {
         res.end(result);
-      })
+      });
     } else {
       res.write(options.body);
       res.end();
