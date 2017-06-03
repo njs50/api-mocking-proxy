@@ -104,10 +104,17 @@ export function resolveMockPath (req, dataRoot) {
 }
 
 export function passthru (res, options) {
+  const zlib = require('zlib');
   try {
     res.writeHead(options.code || 200, options.headers);
-    res.write(options.body);
-    res.end();
+    if (options.headers['content-encoding'] && options.headers['content-encoding'] === 'gzip') {
+      zlib.gzip(options.body, function (_, result) {
+        res.end(result);
+      });
+    } else {
+      res.write(options.body);
+      res.end();
+    }
   } catch (e) {
     console.warn('Error writing response', e);
     res.end();
