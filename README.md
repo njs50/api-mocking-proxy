@@ -4,7 +4,7 @@
 
 AMP intercepts HTTP requests and replays captured responses. Its main purpose is to support test automation and daily development work by removing depedencies on 3rd party APIs - typically, but not only, based on JSON or XML.
 
-There is no GUI to this tool. However, the captured responses are stored as plain text files, which makes them easy to access and manipulate. 
+There is no GUI to this tool. However, the captured responses are stored as plain text files, which makes them easy to access and manipulate.
 
 ## Main Features
 
@@ -55,6 +55,8 @@ Here is a fully annotated configuration file in TOML showing all of the availabl
 host = "localhost"
 port = 8088
 # These are the default values
+ignoreSSL = false
+# false by default, ignores unsigned cert
 
 [proxy]
 timeout = 5000
@@ -62,7 +64,7 @@ disable = false
 # Set to true to have requests not proxied out.
 
 [cache]
-dataRoot = "data" # Folder to store the cached responses. 
+dataRoot = "data" # Folder to store the cached responses.
 disable = false # Disable caching of responses (or reading of existing cache).
 touchFiles = false
 # Will touch or create (empty) the cache files even if disabled

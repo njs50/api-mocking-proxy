@@ -41,7 +41,7 @@ const middleware = () => (req, res, next) => {
   const url = req.conf.host + req.urlToProxy;
   const method = req.method.toLowerCase();
   const urlConf = {url, timeout, headers: req.headers};
-  if (urlConf.headers['accept-encoding'] && urlConf.headers['accept-encoding'].indexOf('gzip')!=-1) {
+  if (urlConf.headers['accept-encoding'] && urlConf.headers['accept-encoding'].indexOf('gzip') !== -1) {
     urlConf.gzip = true;
   }
   // Remove encoding because we've processed the body already.
