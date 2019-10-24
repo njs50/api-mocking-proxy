@@ -1,0 +1,72 @@
+{
+  "name": "api-mocking-proxy",
+  "version": "1.1.2",
+  "description": "An (HTTP) API proxy server that stores and replays captured responses.",
+  "author": "Colin Bate <colin@colinbate.com>",
+  "contributors": [
+    "Tomas Zezula <zezulatomas@gmail.com>"
+  ],
+  "bin": {
+    "amp": "bin/amp"
+  },
+  "scripts": {
+    "build": "babel src --out-dir lib",
+    "start": "npm run build && node lib/cli.js",
+    "lint": "semistandard",
+    "unit": "mocha",
+    "test": "npm run lint",
+    "prepublish": "npm run build",
+    "publish": "publish-to-git"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/njs50/api-mocking-proxy"
+  },
+  "bugs": {
+    "url": "https://github.com/njs50/api-mocking-proxy/issues"
+  },
+  "keywords": [
+    "mock",
+    "replay",
+    "http proxy",
+    "api",
+    "scrape",
+    "scraping",
+    "api mock",
+    "api mock server"
+  ],
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "config": "^1.19.0",
+    "ejs": "^2.4.2",
+    "express": "^4.13.3",
+    "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
+    "morgan": "^1.6.1",
+    "pify": "^2.3.0",
+    "request": "^2.81.0",
+    "semistandard": "^11.0.0",
+    "serve-favicon": "^2.3.0",
+    "toml": "^2.3.0",
+    "touch": "^1.0.0",
+    "type-is": "^1.6.10"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "assert": "~1.3.0",
+    "mocha": "^6.2.2",
+    "nock": "^11.6.0",
+    "node-mocks-http": "~1.2.2",
+    "publish-to-git": "^1.1.7",
+    "rimraf": "~2.2.8"
+  },
+  "analyze": true,
+  "license": "MIT",
+  "homepage": "https://github.com/njs50/api-mocking-proxy",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  }
+}

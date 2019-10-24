@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ./header %>
+<body>
+  <h1><%= title %></h1>
+  <p>Welcome to the <%= title %></p>
+  <h2>Current Proxies</h2>
+  <ul>
+    <% mappings.forEach(m => { %>
+      <li>/<%= m.key  %>/* => <%= m.host %>/*</li>
+    <% }) %>
+  </ul>
+</body>
+</html>
+  
