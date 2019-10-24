@@ -19,7 +19,7 @@ There is no GUI to this tool. However, the captured responses are stored as plai
 The recommended way to install AMP is to create a simple project and install AMP locally to it.
 
 ```
-npm install api-mocking-proxy
+npm install "njs50/api-mocking-proxy#v1.1.2"
 ```
 
 You can set up a `package.json` with an easy way to start your app:
