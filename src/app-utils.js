@@ -106,17 +106,21 @@ export function resolveMockPath (req, dataRoot) {
 export function passthru (res, options) {
   const zlib = require('zlib');
   try {
-    res.writeHead(options.code || 200, options.headers);
     if (options.headers['content-encoding'] && options.headers['content-encoding'] === 'gzip') {
       zlib.gzip(options.body, function (_, result) {
-        res.end(result);
+        options.body = result;
+        options.headers['content-length'] = result.length;
+        res.writeHead(options.code || 200, options.headers);
+        res.end(options.body);
       });
     } else {
+      res.writeHead(options.code || 200, options.headers);
       res.write(options.body);
       res.end();
     }
   } catch (e) {
     console.warn('Error writing response', e);
+    res.writeHead(options.code || 200, options.headers);
     res.end();
   }
 }
